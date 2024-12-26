@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Third-party
     'django_seed',
     'rest_framework',
+    'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_extensions',
     'silk',
@@ -125,6 +126,25 @@ SIMPLE_JWT = {
 #Custom usermodel
 AUTH_USER_MODEL = 'accounts.User'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+# JWT 토큰 만료 시간 설정
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Access Token 유효 시간
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Refresh Token 유효 시간
+    'ROTATE_REFRESH_TOKENS': True,                   # Refresh 토큰 회전 사용
+    'BLACKLIST_AFTER_ROTATION': True,                # 토큰 회전 후 블랙리스트 등록
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -150,3 +170,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 기본 캐시 설정 (로컬 메모리 캐시)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
